@@ -19,6 +19,13 @@
 ## 🛠 Tech Stack
 - **Frontend:** HTML, CSS, JavaScript
 - **Backend:** Node.js, Express, Multer, PDF-Parse
+<img width="1908" height="1037" alt="Screenshot 2025-09-21 173325" src="https://github.com/user-attachments/assets/862f75b9-cad5-478f-9488-a03592d51d4a" />
+
+## Screenshots
+<img width="1906" height="1040" alt="Screenshot 2025-09-21 173309" src="https://github.com/user-attachments/assets/00685825-59fc-4671-b1ad-58a20beb681b" />
+<img width="1908" height="1037" alt="Screenshot 2025-09-21 173325" src="https://github.com/user-attachments/assets/c74e9fcd-5685-4c5d-9e2c-da0da970289e" />
+<img width="1919" height="1031" alt="Screenshot 2025-09-21 173337" src="https://github.com/user-attachments/assets/aa9df8dd-02b4-4865-8660-2dd4ef2e3e73" />
+<img width="1919" height="1029" alt="Screenshot 2025-09-21 173357" src="https://github.com/user-attachments/assets/24a2126e-96f5-4b1c-b834-8f3866ea4f7f" />
 
 ## 🚀 Run Locally
 ```bash
