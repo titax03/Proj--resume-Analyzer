@@ -19,7 +19,7 @@
 ## 🛠 Tech Stack
 - **Frontend:** HTML, CSS, JavaScript
 - **Backend:** Node.js, Express, Multer, PDF-Parse
-<img width="1908" height="1037" alt="Screenshot 2025-09-21 173325" src="https://github.com/user-attachments/assets/862f75b9-cad5-478f-9488-a03592d51d4a" />
+
 
 ## Screenshots
 <img width="1906" height="1040" alt="Screenshot 2025-09-21 173309" src="https://github.com/user-attachments/assets/00685825-59fc-4671-b1ad-58a20beb681b" />
