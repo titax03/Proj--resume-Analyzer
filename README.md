@@ -1,5 +1,5 @@
 # C-VisioN - Resume Analyzer
-<h2>NOTE!- "The site is working "</h2> 
+<h2>NOTE!- "The site is working ",  USE LIVE PREVIEW IN VS CODE </h2> 
 
 🚀 AI-powered resume analyzer built for Hackathon 2025.
 
