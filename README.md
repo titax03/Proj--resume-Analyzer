@@ -6,7 +6,12 @@
 ## ✨ Features
 - Upload PDF resumes
 - AI-powered skill & keyword detection
+- Extracted highlights (skills, projects, keywords)
+- A quick resume rating (out of 100%) for clarity and impact
+- Suggestions for improvement in each section & missing skills
+- Professional summary for the top of the resume
 - ATS-style scoring system
+- Show Strengths
 - Dark mode toggle(Top-left side)
 - Exportable analysis report
 - Sample analysis mode (demo)
@@ -18,7 +23,7 @@
 ## 🚀 Run Locally
 ```bash
 # clone repo
-git clone https://github.com/<your-username>/Proj--resume-Analyzer.git
+gh repo clone titax03/Proj--resume-Analyzer
 
 cd Proj--resume-Analyzer
 
