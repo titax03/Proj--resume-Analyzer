@@ -1,5 +1,5 @@
 # C-VisioN - Resume Analyzer
-<h2>NOTE!!!!!!-- "The site is working, just taking time to analyse which i didnt add the transition so have to upload the resume 2-3times its working 100% "</h2> 
+<h2>NOTE!- "The site is working "</h2> 
 
 🚀 AI-powered resume analyzer built for Hackathon 2025.
 
