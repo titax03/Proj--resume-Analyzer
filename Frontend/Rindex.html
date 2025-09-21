@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Resume Analyzer</title>
+  <link rel="stylesheet" href="Rstyle.css">
+  <script src="Rscript.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Resume Analyzer</h1>
+    <input type="file" id="resumeFile" accept="application/pdf"><br><br>
+    <button onclick="analyzeResume()">Analyze Resume</button>
+
+    <button id="toggleTheme" onclick="toggleTheme()">🌙 Toggle Dark Mode</button>
+
+
+    <div id="result" class="result"></div>
+  </div>
+
+  <script>
+  document.body.classList.add("light");
+  document.querySelector(".container").classList.add("light");
+</script>
+
+</body>
+</html>

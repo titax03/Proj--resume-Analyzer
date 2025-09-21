@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>C-VisioN - Resume Analyzer</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        --accent: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --dark-bg: #0a0e27;
+        --dark-card: #1a1f3a;
+        --light-bg: #f8fafc;
+        --light-card: #ffffff;
+        --text-light: #64748b;
+        --text-dark: #1e293b;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --error: #ef4444;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        line-height: 1.6;
+        transition: all 0.3s ease;
+        background: var(--light-bg);
+        color: var(--text-dark);
+        overflow-x: hidden;
+      }
+
+      body.dark {
+        background: var(--dark-bg);
+        color: #e2e8f0;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        min-height: 100vh;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 3rem;
+        position: relative;
+      }
+
+      .header::before {
+        content: "";
+        position: absolute;
+        top: -50px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 200px;
+        height: 200px;
+        background: var(--primary);
+        border-radius: 50%;
+        opacity: 0.1;
+        animation: pulse 3s infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: translateX(-50%) scale(1);
+        }
+        50% {
+          transform: translateX(-50%) scale(1.1);
+        }
+      }
+
+      .logo {
+        width: 100px;
+        height: 100px;
+        margin: 0 auto 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: float 3s ease-in-out infinite;
+        position: relative;
+      }
+
+      .logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        filter: drop-shadow(0 20px 40px rgba(102, 126, 234, 0.3));
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      h1 {
+        font-size: 3rem;
+        background: var(--primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+        font-weight: 700;
+      }
+
+      .subtitle {
+        font-size: 1.2rem;
+        color: var(--text-light);
+        margin-bottom: 2rem;
+      }
+
+      .main-card {
+        background: var(--light-card);
+        border-radius: 24px;
+        padding: 3rem;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      body.dark .main-card {
+        background: var(--dark-card);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .main-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--primary);
+      }
+
+      .upload-section {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .upload-area {
+        border: 3px dashed #cbd5e1;
+        border-radius: 16px;
+        padding: 3rem 2rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        background: linear-gradient(
+          45deg,
+          rgba(102, 126, 234, 0.05),
+          rgba(118, 75, 162, 0.05)
+        );
+      }
+
+      .upload-area:hover {
+        border-color: #667eea;
+        background: linear-gradient(
+          45deg,
+          rgba(102, 126, 234, 0.1),
+          rgba(118, 75, 162, 0.1)
+        );
+        transform: translateY(-2px);
+      }
+
+      .upload-area.dragover {
+        border-color: #667eea;
+        background: linear-gradient(
+          45deg,
+          rgba(102, 126, 234, 0.15),
+          rgba(118, 75, 162, 0.15)
+        );
+        transform: scale(1.02);
+      }
+
+      .upload-icon {
+        font-size: 4rem;
+        color: #667eea;
+        margin-bottom: 1rem;
+        display: block;
+        animation: bounce 2s infinite;
+      }
+
+      @keyframes bounce {
+        0%,
+        20%,
+        50%,
+        80%,
+        100% {
+          transform: translateY(0);
+        }
+        40% {
+          transform: translateY(-10px);
+        }
+        60% {
+          transform: translateY(-5px);
+        }
+      }
+
+      .upload-text {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--text-dark);
+      }
+
+      body.dark .upload-text {
+        color: #e2e8f0;
+      }
+
+      .upload-subtext {
+        color: var(--text-light);
+        font-size: 0.9rem;
+      }
+
+      .file-input {
+        display: none;
+      }
+
+      .selected-file {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        border-radius: 12px;
+        margin-top: 1rem;
+        animation: slideIn 0.3s ease;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .file-info {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 2rem;
+      }
+
+      .btn {
+        padding: 1rem 2rem;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.5s;
+      }
+
+      .btn:hover::before {
+        left: 100%;
+      }
+
+      .btn-primary {
+        background: var(--primary);
+        color: white;
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+      }
+
+      .btn-secondary {
+        background: var(--dark-card);
+        color: white;
+        box-shadow: 0 10px 25px rgba(26, 31, 58, 0.3);
+      }
+
+      body.dark .btn-secondary {
+        background: var(--light-card);
+        color: var(--text-dark);
+      }
+
+      .btn-secondary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 35px rgba(26, 31, 58, 0.4);
+      }
+
+      .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none !important;
+      }
+
+      .loading {
+        display: none;
+        text-align: center;
+        padding: 2rem;
+      }
+
+      .loading.active {
+        display: block;
+        animation: fadeIn 0.3s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .spinner {
+        width: 60px;
+        height: 60px;
+        border: 4px solid rgba(102, 126, 234, 0.2);
+        border-top: 4px solid #667eea;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 1rem;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .result {
+        margin-top: 2rem;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.5s ease;
+      }
+
+      .result.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .analysis-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .analysis-card {
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 16px;
+        padding: 1.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+      }
+
+      body.dark .analysis-card {
+        background: rgba(26, 31, 58, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .analysis-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      }
+
+      .card-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .card-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+      }
+
+      .icon-score {
+        background: var(--success);
+      }
+      .icon-skills {
+        background: var(--primary);
+      }
+      .icon-experience {
+        background: var(--warning);
+      }
+      .icon-education {
+        background: var(--accent);
+      }
+
+      .card-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text-dark);
+      }
+
+      body.dark .card-title {
+        color: #e2e8f0;
+      }
+
+      .score-display {
+        font-size: 3rem;
+        font-weight: 800;
+        background: var(--success);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-align: center;
+        margin: 1rem 0;
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 12px;
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 6px;
+        overflow: hidden;
+        margin: 1rem 0;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: var(--success);
+        border-radius: 6px;
+        transition: width 1s ease;
+        position: relative;
+      }
+
+      .progress-fill::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
+        animation: shimmer 2s infinite;
+      }
+
+      @keyframes shimmer {
+        0% {
+          transform: translateX(-100%);
+        }
+        100% {
+          transform: translateX(100%);
+        }
+      }
+
+      .suggestions {
+        background: linear-gradient(
+          135deg,
+          rgba(239, 68, 68, 0.1),
+          rgba(245, 158, 11, 0.1)
+        );
+        border-radius: 16px;
+        padding: 1.5rem;
+        border-left: 4px solid var(--warning);
+      }
+
+      .suggestions h3 {
+        color: var(--warning);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .suggestion-list {
+        list-style: none;
+        padding: 0;
+      }
+
+      .suggestion-list li {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid rgba(245, 158, 11, 0.2);
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+
+      .suggestion-list li:last-child {
+        border-bottom: none;
+      }
+
+      .export-section {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+      }
+
+      body.dark .export-section {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .feature-highlight {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+
+      .feature-item {
+        text-align: center;
+        padding: 1rem;
+        border-radius: 12px;
+        background: rgba(102, 126, 234, 0.05);
+        border: 1px solid rgba(102, 126, 234, 0.1);
+      }
+
+      .feature-icon {
+        font-size: 2rem;
+        color: #667eea;
+        margin-bottom: 0.5rem;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 1rem;
+        }
+        h1 {
+          font-size: 2rem;
+        }
+        .main-card {
+          padding: 1.5rem;
+        }
+        .buttons {
+          flex-direction: column;
+        }
+        .analysis-grid {
+          grid-template-columns: 1fr;
+        }
+        .theme-toggle {
+          top: 1rem;
+          right: 1rem;
+          width: 50px;
+          height: 50px;
+          font-size: 1.2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <button class="theme-toggle" onclick="toggleTheme()">
+      <i class="fas fa-moon"></i>
+    </button>
+
+    <div class="container">
+      <header class="header">
+        <div class="logo">
+          <svg
+            width="100"
+            height="100"
+            viewBox="0 0 800 800"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <!-- Eye shape -->
+            <path
+              d="M400 200C200 200 50 400 50 400S200 600 400 600S750 400 750 400S600 200 400 200Z"
+              fill="url(#eyeGradient)"
+              stroke="#1e3a8a"
+              stroke-width="8"
+            />
+
+            <!-- Resume document -->
+            <rect
+              x="320"
+              y="250"
+              width="160"
+              height="200"
+              rx="15"
+              fill="#00f5ff"
+              stroke="#1e3a8a"
+              stroke-width="4"
+            />
+            <rect
+              x="325"
+              y="260"
+              width="150"
+              height="8"
+              rx="4"
+              fill="#1e3a8a"
+            />
+
+            <!-- Person icon in document -->
+            <circle cx="380" cy="300" r="18" fill="#1e3a8a" />
+            <path
+              d="M360 340 Q360 325 380 325 Q400 325 400 340 L400 360 L360 360 Z"
+              fill="#1e3a8a"
+            />
+            <rect x="365" y="375" width="30" height="4" rx="2" fill="#1e3a8a" />
+            <rect x="365" y="385" width="45" height="4" rx="2" fill="#1e3a8a" />
+            <rect x="365" y="395" width="35" height="4" rx="2" fill="#1e3a8a" />
+
+            <!-- Magnifying glass -->
+            <circle
+              cx="415"
+              cy="415"
+              r="35"
+              fill="none"
+              stroke="#1e3a8a"
+              stroke-width="6"
+            />
+            <circle
+              cx="415"
+              cy="415"
+              r="25"
+              fill="url(#magnifyGradient)"
+              opacity="0.3"
+            />
+            <line
+              x1="440"
+              y1="440"
+              x2="460"
+              y2="460"
+              stroke="#1e3a8a"
+              stroke-width="8"
+              stroke-linecap="round"
+            />
+
+            <!-- Data visualization dots -->
+            <rect x="520" y="160" width="25" height="25" fill="#00f5ff" />
+            <rect x="520" y="200" width="20" height="20" fill="#0ea5e9" />
+            <rect x="545" y="200" width="20" height="20" fill="#0ea5e9" />
+            <rect x="520" y="230" width="15" height="15" fill="#3b82f6" />
+            <rect x="540" y="230" width="15" height="15" fill="#3b82f6" />
+            <rect x="560" y="230" width="15" height="15" fill="#3b82f6" />
+
+            <!-- Gradients -->
+            <defs>
+              <linearGradient
+                id="eyeGradient"
+                x1="0%"
+                y1="0%"
+                x2="100%"
+                y2="100%"
+              >
+                <stop
+                  offset="0%"
+                  style="stop-color: #0ea5e9; stop-opacity: 0.8"
+                />
+                <stop
+                  offset="50%"
+                  style="stop-color: #3b82f6; stop-opacity: 0.6"
+                />
+                <stop
+                  offset="100%"
+                  style="stop-color: #1e3a8a; stop-opacity: 0.9"
+                />
+              </linearGradient>
+              <linearGradient
+                id="magnifyGradient"
+                x1="0%"
+                y1="0%"
+                x2="100%"
+                y2="100%"
+              >
+                <stop
+                  offset="0%"
+                  style="stop-color: #667eea; stop-opacity: 0.3"
+                />
+                <stop
+                  offset="100%"
+                  style="stop-color: #764ba2; stop-opacity: 0.5"
+                />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <h1>C-VisioN</h1>
+        <p class="subtitle">
+          Transform your resume with AI-powered insights and professional
+          recommendations
+        </p>
+      </header>
+
+      <div class="main-card">
+        <div class="feature-highlight">
+          <div class="feature-item">
+            <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+            <h4>Smart Scoring</h4>
+            <p>Get instant ATS compatibility scores</p>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon"><i class="fas fa-lightbulb"></i></div>
+            <h4>AI Suggestions</h4>
+            <p>Receive personalized improvement tips</p>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon"><i class="fas fa-download"></i></div>
+            <h4>Export Report</h4>
+            <p>Download detailed analysis report</p>
+          </div>
+        </div>
+
+        <div class="upload-section">
+          <div
+            class="upload-area"
+            onclick="document.getElementById('resumeFile').click()"
+            ondrop="handleDrop(event)"
+            ondragover="handleDragOver(event)"
+            ondragleave="handleDragLeave(event)"
+          >
+            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+            <div class="upload-text">
+              Drop your resume here or click to browse
+            </div>
+            <div class="upload-subtext">Supports PDF files up to 10MB</div>
+            <input
+              type="file"
+              id="resumeFile"
+              class="file-input"
+              accept="application/pdf"
+              onchange="handleFileSelect(event)"
+            />
+          </div>
+          <div id="selectedFile" class="selected-file" style="display: none">
+            <div class="file-info">
+              <i
+                class="fas fa-file-pdf"
+                style="color: #ef4444; font-size: 1.5rem"
+              ></i>
+              <span id="fileName"></span>
+            </div>
+            <button
+              onclick="clearFile()"
+              style="
+                background: none;
+                border: none;
+                color: #ef4444;
+                cursor: pointer;
+              "
+            >
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="buttons">
+          <button
+            id="analyzeBtn"
+            class="btn btn-primary"
+            type="button"
+            onclick="analyzeResume()"
+            disabled
+          >
+            <i class="fas fa-magic"></i>
+            Analyze Resume
+          </button>
+
+          <button
+            class="btn btn-secondary"
+            type="button"
+            onclick="showSample()"
+          >
+            <i class="fas fa-eye"></i>
+            View Sample Analysis
+          </button>
+        </div>
+
+        <div id="loading" class="loading">
+          <div class="spinner"></div>
+          <p>Analyzing your resume with AI...</p>
+          <p style="font-size: 0.9rem; color: var(--text-light)">
+            This may take a few moments
+          </p>
+        </div>
+
+        <div id="result" class="result"></div>
+
+        <div class="export-section" id="exportSection" style="display: none">
+          <button class="btn btn-primary" onclick="exportReport()">
+            <i class="fas fa-download"></i>
+            Download Analysis Report
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const API_BASE_URL = "http://localhost:3001"; // Change to 5000 for Python backend
+      const ENDPOINTS = {
+        analyze: `${API_BASE_URL}/api/analyze`,
+        sample: `${API_BASE_URL}/api/sample`,
+        health: `${API_BASE_URL}/health`,
+      };
+
+      let currentTheme = "light";
+      let analysisData = null;
+
+      // Enhanced analyze function with real backend integration
+      async function analyzeResume() {
+        const fileInput = document.getElementById("resumeFile");
+        if (!fileInput.files[0]) {
+          alert("Please select a resume file first.");
+          return;
+        }
+
+        const file = fileInput.files[0];
+
+        // Validate file
+        if (file.type !== "application/pdf") {
+          alert("Please select a PDF file.");
+          return;
+        }
+
+        if (file.size > 10 * 1024 * 1024) {
+          alert("File size should be less than 10MB.");
+          return;
+        }
+
+        showLoading();
+
+        try {
+          // Create FormData for file upload
+          const formData = new FormData();
+          formData.append("resume", file);
+
+          // Make API call to backend
+          const response = await fetch(ENDPOINTS.analyze, {
+            method: "POST",
+            body: formData,
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(
+              errorData.error || `HTTP error! status: ${response.status}`
+            );
+          }
+
+          const result = await response.json();
+
+          if (result.success) {
+            displayResults(result.analysis);
+            analysisData = result.analysis;
+          } else {
+            throw new Error(result.error || "Analysis failed");
+          }
+        } catch (error) {
+          console.error("Analysis error:", error);
+          hideLoading();
+
+          // Show user-friendly error message
+          document.getElementById("result").innerHTML = `
+      <div style="text-align: center; padding: 2rem; background: rgba(239, 68, 68, 0.1); border-radius: 16px; border: 1px solid rgba(239, 68, 68, 0.3);">
+        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #ef4444; margin-bottom: 1rem;"></i>
+        <h3 style="color: #ef4444; margin-bottom: 1rem;">Analysis Failed</h3>
+        <p style="color: var(--text-dark); margin-bottom: 1rem;">${error.message}</p>
+        <button class="btn btn-secondary" onclick="location.reload()">
+          <i class="fas fa-refresh"></i>
+          Try Again
+        </button>
+      </div>
+    `;
+          document.getElementById("result").classList.add("show");
+        }
+      }
+
+      // Enhanced sample analysis function
+      async function showSample() {
+        showLoading();
+
+        try {
+          const response = await fetch(ENDPOINTS.sample);
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const result = await response.json();
+
+          if (result.success) {
+            displayResults(result.analysis);
+            analysisData = result.analysis;
+          } else {
+            throw new Error("Failed to load sample analysis");
+          }
+        } catch (error) {
+          console.error("Sample analysis error:", error);
+          // Fallback to local sample data
+          const sampleAnalysis = generateSampleAnalysis();
+          displayResults(sampleAnalysis);
+          analysisData = sampleAnalysis;
+        }
+
+        hideLoading();
+      }
+
+      // Backend health check function
+      async function checkBackendHealth() {
+        try {
+          const response = await fetch(ENDPOINTS.health);
+          const result = await response.json();
+          console.log("Backend health:", result);
+          return response.ok;
+        } catch (error) {
+          console.warn("Backend not available:", error);
+          return false;
+        }
+      }
+
+      // Enhanced export function with more details
+      function exportReport() {
+        if (!analysisData) return;
+
+        const report = `
+C-VisioN Resume Analysis Report
+================================
+Generated on: ${new Date().toLocaleDateString()}
+
+OVERALL ASSESSMENT
+------------------
+Resume Rating: ${analysisData.overallRating}/10
+Overall Score: ${analysisData.overallScore}%
+
+EXTRACTED HIGHLIGHTS
+--------------------
+Skills Found:
+${analysisData.extractedHighlights.skills.map((s) => `• ${s}`).join("\n")}
+
+Key Projects:
+${analysisData.extractedHighlights.projects.map((p) => `• ${p}`).join("\n")}
+
+Industry Keywords:
+${analysisData.extractedHighlights.keywords.map((k) => `• ${k}`).join("\n")}
+
+PROFESSIONAL SUMMARY SUGGESTION
+--------------------------------
+${analysisData.professionalSummary}
+
+RESUME STRENGTHS
+----------------
+${analysisData.strengths.map((s) => `• ${s}`).join("\n")}
+
+IMPROVEMENT RECOMMENDATIONS
+---------------------------
+General Improvements:
+${analysisData.improvements.map((i) => `• ${i}`).join("\n")}
+
+Section-Specific Improvements:
+
+Experience Section:
+${analysisData.sectionImprovements.experience.map((i) => `• ${i}`).join("\n")}
+
+Skills Section:
+${analysisData.sectionImprovements.skills.map((i) => `• ${i}`).join("\n")}
+
+Education Section:
+${analysisData.sectionImprovements.education.map((i) => `• ${i}`).join("\n")}
+
+Projects Section:
+${analysisData.sectionImprovements.projects.map((i) => `• ${i}`).join("\n")}
+
+---
+Generated by C-VisioN - AI Resume Analyzer
+Visit: https://your-domain.com
+  `;
+
+        const blob = new Blob([report], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `cvision-analysis-${
+          new Date().toISOString().split("T")[0]
+        }.txt`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
+      // Initialize app and check backend
+      document.addEventListener("DOMContentLoaded", async function () {
+        document.body.classList.add("light");
+
+        // Check if backend is available
+        const backendAvailable = await checkBackendHealth();
+
+        if (!backendAvailable) {
+          console.warn("Backend not available - using mock data");
+          // You could show a notification to the user here
+        }
+      });
+
+      // Rest of your existing functions remain the same
+      function toggleTheme() {
+        const body = document.body;
+        const themeIcon = document.querySelector(".theme-toggle i");
+
+        if (currentTheme === "light") {
+          body.classList.remove("light");
+          body.classList.add("dark");
+          themeIcon.className = "fas fa-sun";
+          currentTheme = "dark";
+        } else {
+          body.classList.remove("dark");
+          body.classList.add("light");
+          themeIcon.className = "fas fa-moon";
+          currentTheme = "light";
+        }
+      }
+
+      // File handling functions (unchanged)
+      function handleDrop(e) {
+        e.preventDefault();
+        const uploadArea = document.querySelector(".upload-area");
+        uploadArea.classList.remove("dragover");
+
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+          handleFile(files[0]);
+        }
+      }
+
+      function handleDragOver(e) {
+        e.preventDefault();
+        document.querySelector(".upload-area").classList.add("dragover");
+      }
+
+      function handleDragLeave(e) {
+        e.preventDefault();
+        document.querySelector(".upload-area").classList.remove("dragover");
+      }
+
+      function handleFileSelect(e) {
+        const file = e.target.files[0];
+        if (file) {
+          handleFile(file);
+        }
+      }
+
+      function handleFile(file) {
+        if (file.type !== "application/pdf") {
+          alert("Please select a PDF file.");
+          return;
+        }
+
+        if (file.size > 10 * 1024 * 1024) {
+          alert("File size should be less than 10MB.");
+          return;
+        }
+
+        document.getElementById("fileName").textContent = file.name;
+        document.getElementById("selectedFile").style.display = "flex";
+        document.getElementById("analyzeBtn").disabled = false;
+      }
+
+      function clearFile() {
+        document.getElementById("resumeFile").value = "";
+        document.getElementById("selectedFile").style.display = "none";
+        document.getElementById("analyzeBtn").disabled = true;
+      }
+
+      function showLoading() {
+        document.getElementById("loading").classList.add("active");
+        document.getElementById("result").classList.remove("show");
+        document.getElementById("exportSection").style.display = "none";
+      }
+
+      function hideLoading() {
+        document.getElementById("loading").classList.remove("active");
+      }
+      function displayResults(analysis) {
+        hideLoading();
+        const resultDiv = document.getElementById("result");
+        resultDiv.innerHTML = `
+    <div class="analysis-grid">
+      <!-- Score -->
+      <div class="analysis-card">
+        <div class="card-header">
+          <div class="card-icon icon-score"><i class="fas fa-star"></i></div>
+          <h3 class="card-title">Overall Score</h3>
+        </div>
+        <div class="score-display">${analysis.overallScore}%</div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width:${
+            analysis.overallScore
+          }%"></div>
+        </div>
+      </div>
+
+      <!-- Skills -->
+      <div class="analysis-card">
+        <div class="card-header">
+          <div class="card-icon icon-skills"><i class="fas fa-code"></i></div>
+          <h3 class="card-title">Skills</h3>
+        </div>
+        <ul>
+          ${analysis.extractedHighlights.skills
+            .map((s) => `<li>${s}</li>`)
+            .join("")}
+        </ul>
+      </div>
+
+      <!-- Projects -->
+      <div class="analysis-card">
+        <div class="card-header">
+          <div class="card-icon icon-experience"><i class="fas fa-briefcase"></i></div>
+          <h3 class="card-title">Projects</h3>
+        </div>
+        <ul>
+          ${analysis.extractedHighlights.projects
+            .map((p) => `<li>${p}</li>`)
+            .join("")}
+        </ul>
+      </div>
+
+      <!-- Industry Keywords -->
+      <div class="analysis-card">
+        <div class="card-header">
+          <div class="card-icon icon-education"><i class="fas fa-tags"></i></div>
+          <h3 class="card-title">Industry Keywords</h3>
+        </div>
+        <ul>
+          ${analysis.extractedHighlights.keywords
+            .map((k) => `<li>${k}</li>`)
+            .join("")}
+        </ul>
+      </div>
+
+      <!-- Strengths -->
+      <div class="analysis-card">
+        <h3 class="card-title"><i class="fas fa-thumbs-up"></i> Strengths</h3>
+        <ul>
+          ${analysis.strengths.map((s) => `<li>${s}</li>`).join("")}
+        </ul>
+      </div>
+
+      <!-- Suggestions -->
+      <div class="analysis-card suggestions">
+        <h3><i class="fas fa-lightbulb"></i> Suggestions</h3>
+        <ul class="suggestion-list">
+          ${analysis.improvements.map((i) => `<li>${i}</li>`).join("")}
+        </ul>
+      </div>
+    </div>
+
+    <!-- Professional Summary -->
+    <div class="analysis-card">
+      <h3 class="card-title"><i class="fas fa-user"></i> Professional Summary</h3>
+      <p>${analysis.professionalSummary}</p>
+    </div>
+  `;
+        resultDiv.classList.add("show");
+        document.getElementById("exportSection").style.display = "block";
+      }
+
+      function generateSampleAnalysis() {
+        return {
+          overallRating: 8,
+          overallScore: 80,
+          extractedHighlights: {
+            skills: ["React", "JavaScript", "Python"],
+            projects: ["Portfolio Website", "Chat App"],
+            keywords: ["Software Engineer", "Full Stack"],
+          },
+          professionalSummary: "Sample professional summary...",
+          strengths: ["Strong skills", "Good projects"],
+          improvements: ["Add quantified results", "Include GitHub link"],
+          sectionImprovements: {
+            experience: ["Add metrics"],
+            skills: ["Group skills by category"],
+            education: ["Include GPA"],
+            projects: ["Provide GitHub links"],
+          },
+        };
+      }
+    </script>
+  </body>
+</html>
