@@ -7,7 +7,7 @@
 - Upload PDF resumes
 - AI-powered skill & keyword detection
 - ATS-style scoring system
-- Dark mode toggle
+- Dark mode toggle(Top-left side)
 - Exportable analysis report
 - Sample analysis mode (demo)
 
