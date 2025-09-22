@@ -38,4 +38,7 @@ cd Proj--resume-Analyzer
 npm install
 
 # start backend
+cd cvision-backend
 node server.js
+or
+npm start
